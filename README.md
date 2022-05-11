@@ -21,12 +21,12 @@ git clone https://github.com/Caioferrari04/LabManager.git
 
 Para utilizar a aplicação, pode se usar os seguintes comandos:
 
-CREATE: Substitua os valores para inserir novas tuplas na tabela 
+CREATE, Substitua os valores para inserir novas tuplas na tabela:
  ```
  dotnet run -- Computer New id ram processador
  ```
 
-E para listar, basta utilizar:
+READ, liste utilizando:
 
  ```
  dotnet run -- Computer List
