@@ -1,26 +1,7 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using LabManager.Database;
+using Microsoft.Data.Sqlite;
 
-var connection = new SqliteConnection("Data Source=database.db");
-
-connection.Open();
-var command = connection.CreateCommand();
-
-command.CommandText = @"
-    CREATE TABLE IF NOT EXISTS Computers(
-        ID int not null primary key,
-        ram varchar(100) not null,
-        processor varchar(100) not null
-    );
-    CREATE TABLE IF NOT EXISTS Labs(
-        ID INT NOT NULL PRIMARY KEY,
-        Number INT NOT NULL,
-        Name VARCHAR(100) NOT NULL,
-        Block VARCHAR(50) NOT NULL
-    );";
-
-command.ExecuteNonQuery();
-
-connection.Close();
+var databaseSetup = new DatabaseSetup(); 
 
 var modelName = args[0];
 var modelAction = args[1];
@@ -29,11 +10,11 @@ if (modelName == "Computer")
 {
     if (modelAction == "List")
     {
-        connection = new SqliteConnection("Data Source=database.db");
+        var connection = new SqliteConnection("Data Source=database.db");
         connection.Open();
-        command = connection.CreateCommand();
+        var command = connection.CreateCommand();
 
-        command.CommandText = $"SELECT * FROM Computers;";
+        command.CommandText = $"SELECT * FROM Computer;";
 
         var reader = command.ExecuteReader();
 
@@ -49,11 +30,11 @@ if (modelName == "Computer")
         var id = Convert.ToInt32(args[2]);
         var ram = args[3];
         var processor = args[4];
-        connection = new SqliteConnection("Data Source=database.db");
+        var connection = new SqliteConnection("Data Source=database.db");
         connection.Open();
-        command = connection.CreateCommand();
+        var command = connection.CreateCommand();
 
-        command.CommandText = $"INSERT INTO Computers VALUES($id, $ram, $processor)";
+        command.CommandText = $"INSERT INTO Computer VALUES($id, $ram, $processor)";
 
         command.Parameters.AddWithValue("$id", id);
         command.Parameters.AddWithValue("$ram", ram);
@@ -74,11 +55,11 @@ else if (modelName == "Lab")
                 var number = args[3];
                 var name = args[4];
                 var block = args[5];
-                connection = new SqliteConnection("Data Source=database.db");
+                var connection = new SqliteConnection("Data Source=database.db");
                 connection.Open();
-                command = connection.CreateCommand();
+                var command = connection.CreateCommand();
 
-                command.CommandText = $"INSERT INTO Labs VALUES($id, $number, $name, $block)";
+                command.CommandText = $"INSERT INTO Lab VALUES($id, $number, $name, $block)";
 
                 command.Parameters.AddWithValue("$id", id);
                 command.Parameters.AddWithValue("$number", number);
@@ -93,11 +74,11 @@ else if (modelName == "Lab")
             }
         case "List":
             {
-                connection = new SqliteConnection("Data Source=database.db");
+                var connection = new SqliteConnection("Data Source=database.db");
                 connection.Open();
-                command = connection.CreateCommand();
+                var command = connection.CreateCommand();
 
-                command.CommandText = $"SELECT * FROM Labs;";
+                command.CommandText = $"SELECT * FROM Lab;";
 
                 var reader = command.ExecuteReader();
 
