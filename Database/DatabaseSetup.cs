@@ -6,11 +6,10 @@ public class DatabaseSetup
 {
     public DatabaseSetup()
     {
-        _createComputerTable();
-        _createLabTable();   
+        CreateComputerTable();
     }
 
-    private void _createComputerTable()
+    private void CreateComputerTable()
     {
         var connection = new SqliteConnection("Data Source=database.db");
 
@@ -23,26 +22,6 @@ public class DatabaseSetup
                 ram varchar(100) not null,
                 processor varchar(100) not null
         );";
-
-        command.ExecuteNonQuery();
-
-        connection.Close();
-    }
-
-    private void _createLabTable()
-    {
-        var connection = new SqliteConnection("Data Source=database.db");
-
-        connection.Open();
-        var command = connection.CreateCommand();
-
-        command.CommandText = @"
-            CREATE TABLE IF NOT EXISTS Lab(
-                ID INT NOT NULL PRIMARY KEY,
-                Number INT NOT NULL,
-                Name VARCHAR(100) NOT NULL,
-                Block VARCHAR(50) NOT NULL
-            );";
 
         command.ExecuteNonQuery();
 
