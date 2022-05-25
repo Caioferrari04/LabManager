@@ -4,14 +4,14 @@ using Microsoft.Data.Sqlite;
 
 namespace LabManager.Repositories;
 
-public class ComputerRepository 
+public class ComputerRepository
 {
     private readonly DatabaseConfig _databaseConfig;
     public ComputerRepository(DatabaseConfig databaseConfig)
     {
         _databaseConfig = databaseConfig;
     }
-    public List<Computer> GetAll() 
+    public List<Computer> GetAll()
     {
         var computers = new List<Computer>();
 
@@ -29,11 +29,28 @@ public class ComputerRepository
             var processor = reader.GetString(2);
 
             var computer = new Computer(id: id, ram: ram, processor: processor);
-            computers.Add(computer); 
+            computers.Add(computer);
         }
 
         connection.Close();
 
         return computers;
+    }
+
+    public void Save(Computer computer)
+    {
+        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
+        connection.Open();
+        var command = connection.CreateCommand();
+
+        command.CommandText = $"INSERT INTO Computer VALUES($id, $ram, $processor)";
+
+        command.Parameters.AddWithValue("$id", computer.ID);
+        command.Parameters.AddWithValue("$ram", computer.Ram);
+        command.Parameters.AddWithValue("$processor", computer.Processor);
+
+        command.ExecuteNonQuery();
+
+        connection.Close();
     }
 }
