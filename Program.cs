@@ -2,8 +2,9 @@
 using LabManager.Repositories;
 using Microsoft.Data.Sqlite;
 
-var databaseSetup = new DatabaseSetup(); 
-var computerRepository = new ComputerRepository();
+var databaseConfig = new DatabaseConfig();
+var databaseSetup = new DatabaseSetup(databaseConfig); 
+var computerRepository = new ComputerRepository(databaseConfig);
 
 var modelName = args[0];
 var modelAction = args[1];
@@ -22,7 +23,7 @@ if (modelName == "Computer")
         var id = Convert.ToInt32(args[2]);
         var ram = args[3];
         var processor = args[4];
-        var connection = new SqliteConnection("Data Source=database.db");
+        var connection = new SqliteConnection(databaseConfig.ConnectionString);
         connection.Open();
         var command = connection.CreateCommand();
 
