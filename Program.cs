@@ -29,6 +29,14 @@ if (modelName == "Computer")
 
         computerRepository.Save(computer);
     }
+    else if (modelAction == "Show") 
+    {
+        var id = Convert.ToInt32(args[2]);
+
+        var computer = computerRepository.GetById(id);
+
+        Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
+    }
 }
 else if (modelName == "Lab")
 {
