@@ -48,6 +48,14 @@ if (modelName == "Computer")
 
         Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
     }
+    else if (modelAction == "Delete")
+    {
+        var id = Convert.ToInt32(args[2]);
+
+        computerRepository.Delete(id);
+
+        Console.WriteLine($"Computador de ID {id} excluído com sucesso.");
+    }
 }
 else if (modelName == "Lab")
 {
