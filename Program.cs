@@ -4,7 +4,7 @@ using LabManager.Repositories;
 using Microsoft.Data.Sqlite;
 
 var databaseConfig = new DatabaseConfig();
-var databaseSetup = new DatabaseSetup(databaseConfig); 
+var databaseSetup = new DatabaseSetup(databaseConfig);
 var computerRepository = new ComputerRepository(databaseConfig);
 
 var modelName = args[0];
@@ -14,7 +14,7 @@ if (modelName == "Computer")
 {
     if (modelAction == "List")
     {
-        foreach(var computer in computerRepository.GetAll())
+        foreach (var computer in computerRepository.GetAll())
         {
             Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
         }
@@ -24,16 +24,27 @@ if (modelName == "Computer")
         var id = Convert.ToInt32(args[2]);
         var ram = args[3];
         var processor = args[4];
-        
+
         var computer = new Computer(id: id, ram: ram, processor: processor);
 
         computerRepository.Save(computer);
     }
-    else if (modelAction == "Show") 
+    else if (modelAction == "Show")
     {
         var id = Convert.ToInt32(args[2]);
 
         var computer = computerRepository.GetById(id);
+
+        Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
+    }
+    else if (modelAction == "Update")
+    {
+        var id = Convert.ToInt32(args[2]);
+        var ram = args[3];
+        var processor = args[4];
+
+        var computer = new Computer(id: id, ram: ram, processor: processor);
+        computer = computerRepository.Update(computer);
 
         Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
     }
