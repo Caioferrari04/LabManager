@@ -1,124 +1,173 @@
 ﻿using LabManager.Database;
 using LabManager.Models;
 using LabManager.Repositories;
-using Microsoft.Data.Sqlite;
 
 var databaseConfig = new DatabaseConfig();
 var databaseSetup = new DatabaseSetup(databaseConfig);
 var computerRepository = new ComputerRepository(databaseConfig);
+var labRepository = new LabRepository(databaseConfig);
 
 var modelName = args[0];
 var modelAction = args[1];
 
-if (modelName == "Computer")
+try
 {
-    switch (modelAction)
+    switch (modelName)
     {
-        case "List":
+        case "Computer":
             {
-                foreach (var computer in computerRepository.GetAll())
+                switch (modelAction)
                 {
-                    Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
+                    case "List":
+                        {
+                            foreach (var computer in computerRepository.GetAll())
+                            {
+                                Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
+                            }
+                            break;
+                        }
+                    case "New":
+                        {
+                            var id = Convert.ToInt32(args[2]);
+                            var ram = args[3];
+                            var processor = args[4];
+
+                            var computer = new Computer(id: id, ram: ram, processor: processor);
+
+                            computerRepository.Save(computer);
+
+                            break;
+                        }
+                    case "Show":
+                        {
+                            var id = Convert.ToInt32(args[2]);
+
+                            if (computerRepository.ExistsById(id))
+                            {
+                                var computer = computerRepository.GetById(id);
+
+                                Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
+                                break;
+                            }
+                            Console.WriteLine("Não existe computador com esse ID");
+                            break;
+                        }
+                    case "Update":
+                        {
+                            var id = Convert.ToInt32(args[2]);
+
+                            if (computerRepository.ExistsById(id))
+                            {
+                                var ram = args[3];
+                                var processor = args[4];
+
+                                var computer = new Computer(id: id, ram: ram, processor: processor);
+                                computer = computerRepository.Update(computer);
+
+                                Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
+                                break;
+                            }
+                            Console.WriteLine("Não existe computador com esse ID");
+                            break;
+                        }
+                    case "Delete":
+                        {
+                            var id = Convert.ToInt32(args[2]);
+                            if (computerRepository.ExistsById(id))
+                            {
+                                computerRepository.Delete(id);
+
+                                Console.WriteLine($"Computador de ID {id} excluído com sucesso.");
+                                break;
+                            }
+                            Console.WriteLine("Não existe computador com esse ID");
+                            break;
+                        }
+                    default:
+                        throw new ApplicationException("Operacao invalida");
                 }
                 break;
             }
-        case "New":
+        case "Lab":
             {
-                var id = Convert.ToInt32(args[2]);
-                var ram = args[3];
-                var processor = args[4];
+                switch (modelAction)
+                {
+                    case "List":
+                        {
+                            foreach (var lab in labRepository.GetAll())
+                            {
+                                Console.WriteLine($"{lab.ID}, {lab.Name}, {lab.Block}, {lab.Number}");
+                            }
+                            break;
+                        }
+                    case "New":
+                        {
+                            var id = Convert.ToInt32(args[2]);
+                            var name = args[3];
+                            var block = args[4];
+                            var number = Convert.ToInt32(args[5]);
 
-                var computer = new Computer(id: id, ram: ram, processor: processor);
+                            var lab = new Lab(id: id, name: name, block: block, number: number);
 
-                computerRepository.Save(computer);
+                            labRepository.Save(lab);
 
-                break;
-            }
-        case "Show":
-            {
-                var id = Convert.ToInt32(args[2]);
+                            break;
+                        }
+                    case "Show":
+                        {
+                            var id = Convert.ToInt32(args[2]);
+                            if (labRepository.ExistsById(id))
+                            {
+                                var lab = labRepository.GetById(id);
 
-                var computer = computerRepository.GetById(id);
+                                Console.WriteLine($"{lab.ID}, {lab.Name}, {lab.Block}, {lab.Number}");
+                                break;
+                            }
+                            Console.WriteLine("Não existe laboratorio com esse ID");
+                            break;
+                        }
+                    case "Update":
+                        {
+                            var id = Convert.ToInt32(args[2]);
+                            if (labRepository.ExistsById(id))
+                            {
+                                var name = args[3];
+                                var block = args[4];
+                                var number = Convert.ToInt32(args[5]);
 
-                Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
+                                var lab = new Lab(id: id, name: name, block: block, number: number);
+                                lab = labRepository.Update(lab);
 
-                break;
+                                Console.WriteLine($"{lab.ID}, {lab.Name}, {lab.Block}, {lab.Number}");
+                                break;
+                            }
+                            Console.WriteLine("Não existe laboratorio com esse ID");
+                            break;
+                        }
+                    case "Delete":
+                        {
+                            var id = Convert.ToInt32(args[2]);
 
-            }
-        case "Update":
-            {
-                var id = Convert.ToInt32(args[2]);
-                var ram = args[3];
-                var processor = args[4];
+                            if (labRepository.ExistsById(id))
+                            {
+                                labRepository.Delete(id);
 
-                var computer = new Computer(id: id, ram: ram, processor: processor);
-                computer = computerRepository.Update(computer);
-
-                Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
-
-                break;
-            }
-        case "Delete":
-            {
-                var id = Convert.ToInt32(args[2]);
-
-                computerRepository.Delete(id);
-
-                Console.WriteLine($"Computador de ID {id} excluído com sucesso.");
-
+                                Console.WriteLine($"Laboratório de ID {id} excluído com sucesso.");
+                                break;
+                            }
+                            Console.WriteLine("Não existe laboratorio com esse ID");
+                            break;
+                        }
+                    default:
+                        throw new ApplicationException("Operacao invalida");
+                }
                 break;
             }
         default:
-            throw new Exception("Operacao invalida");
+            throw new ApplicationException("Modelo invalido");
     }
 }
-else if (modelName == "Lab")
+catch (ApplicationException erro)
 {
-    switch (modelAction)
-    {
-        case "New":
-            {
-                var id = Convert.ToInt32(args[2]);
-                var number = args[3];
-                var name = args[4];
-                var block = args[5];
-                var connection = new SqliteConnection("Data Source=database.db");
-                connection.Open();
-                var command = connection.CreateCommand();
-
-                command.CommandText = $"INSERT INTO Lab VALUES($id, $number, $name, $block)";
-
-                command.Parameters.AddWithValue("$id", id);
-                command.Parameters.AddWithValue("$number", number);
-                command.Parameters.AddWithValue("$name", name);
-                command.Parameters.AddWithValue("$block", block);
-
-                command.ExecuteNonQuery();
-
-                connection.Close();
-
-                break;
-            }
-        case "List":
-            {
-                var connection = new SqliteConnection("Data Source=database.db");
-                connection.Open();
-                var command = connection.CreateCommand();
-
-                command.CommandText = $"SELECT * FROM Lab;";
-
-                var reader = command.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    Console.WriteLine($"{reader.GetInt32(0)} {reader.GetString(1)} {reader.GetString(2)} {reader.GetString(3)}");
-                }
-
-                connection.Close();
-                break;
-            }
-        default:
-            Console.WriteLine("Comando inválido");
-            break;
-    }
+    Console.WriteLine(erro.Message);
 }
