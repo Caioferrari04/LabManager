@@ -9,6 +9,7 @@ public class DatabaseSetup
     {
         _databaseConfig = databaseConfig;
         CreateComputerTable();
+        CreateLabTable();
     }
 
     private void CreateComputerTable()
@@ -23,6 +24,26 @@ public class DatabaseSetup
                 ID int not null primary key,
                 ram varchar(100) not null,
                 processor varchar(100) not null
+        );";
+
+        command.ExecuteNonQuery();
+
+        connection.Close();
+    }
+
+    private void CreateLabTable()
+    {
+        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
+
+        connection.Open();
+        var command = connection.CreateCommand();
+
+        command.CommandText = @"
+            CREATE TABLE IF NOT EXISTS Lab(
+                ID int not null primary key,
+                Name varchar(100) not null,
+                Block varchar(100) not null,
+                Number int not null
         );";
 
         command.ExecuteNonQuery();
