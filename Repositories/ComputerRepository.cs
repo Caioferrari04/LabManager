@@ -24,11 +24,8 @@ public class ComputerRepository
         var reader = command.ExecuteReader();
         while (reader.Read())
         {
-            var id = reader.GetInt32(0);
-            var ram = reader.GetString(1);
-            var processor = reader.GetString(2);
+            var computer = readerToComputer(reader);
 
-            var computer = new Computer(id: id, ram: ram, processor: processor);
             computers.Add(computer);
         }
 
@@ -65,15 +62,16 @@ public class ComputerRepository
 
         var reader = command.ExecuteReader();
 
-        reader.Read();
-        var ram = reader.GetString(1);
-        var processor = reader.GetString(2);
-
-        var computer = new Computer(id: id, ram: ram, processor: processor);
+        //if (reader.Read())
+        //{
+        var computer = readerToComputer(reader);
 
         connection.Close();
 
         return computer;
+        //}
+
+        //throw new ApplicationException("Não há computador com esse ID!");
     }
     public Computer Update(Computer computer)
     {
@@ -95,7 +93,7 @@ public class ComputerRepository
         return computer;
     }
 
-    public void Delete(int id) 
+    public void Delete(int id)
     {
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
@@ -109,5 +107,30 @@ public class ComputerRepository
         command.ExecuteNonQuery();
 
         connection.Close();
+    }
+
+    private Computer readerToComputer(SqliteDataReader reader)
+    {
+        return new Computer(
+            id: reader.GetInt32(0),
+            ram: reader.GetString(1),
+            processor: reader.GetString(2)
+        ); ;
+    }
+
+    public bool ExistsById(int id)
+    {
+        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
+        connection.Open();
+
+        var command = connection.CreateCommand();
+
+        command.CommandText = "SELECT COUNT(ID) FROM Computer WHERE ID=$ID";
+        command.Parameters.AddWithValue("$ID", id);
+
+        var reader = command.ExecuteReader();
+
+        connection.Close();
+        return reader.GetBoolean(0);
     }
 }
