@@ -12,49 +12,64 @@ var modelAction = args[1];
 
 if (modelName == "Computer")
 {
-    if (modelAction == "List")
+    switch (modelAction)
     {
-        foreach (var computer in computerRepository.GetAll())
-        {
-            Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
-        }
-    }
-    else if (modelAction == "New")
-    {
-        var id = Convert.ToInt32(args[2]);
-        var ram = args[3];
-        var processor = args[4];
+        case "List":
+            {
+                foreach (var computer in computerRepository.GetAll())
+                {
+                    Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
+                }
+                break;
+            }
+        case "New":
+            {
+                var id = Convert.ToInt32(args[2]);
+                var ram = args[3];
+                var processor = args[4];
 
-        var computer = new Computer(id: id, ram: ram, processor: processor);
+                var computer = new Computer(id: id, ram: ram, processor: processor);
 
-        computerRepository.Save(computer);
-    }
-    else if (modelAction == "Show")
-    {
-        var id = Convert.ToInt32(args[2]);
+                computerRepository.Save(computer);
 
-        var computer = computerRepository.GetById(id);
+                break;
+            }
+        case "Show":
+            {
+                var id = Convert.ToInt32(args[2]);
 
-        Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
-    }
-    else if (modelAction == "Update")
-    {
-        var id = Convert.ToInt32(args[2]);
-        var ram = args[3];
-        var processor = args[4];
+                var computer = computerRepository.GetById(id);
 
-        var computer = new Computer(id: id, ram: ram, processor: processor);
-        computer = computerRepository.Update(computer);
+                Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
 
-        Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
-    }
-    else if (modelAction == "Delete")
-    {
-        var id = Convert.ToInt32(args[2]);
+                break;
 
-        computerRepository.Delete(id);
+            }
+        case "Update":
+            {
+                var id = Convert.ToInt32(args[2]);
+                var ram = args[3];
+                var processor = args[4];
 
-        Console.WriteLine($"Computador de ID {id} excluído com sucesso.");
+                var computer = new Computer(id: id, ram: ram, processor: processor);
+                computer = computerRepository.Update(computer);
+
+                Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
+
+                break;
+            }
+        case "Delete":
+            {
+                var id = Convert.ToInt32(args[2]);
+
+                computerRepository.Delete(id);
+
+                Console.WriteLine($"Computador de ID {id} excluído com sucesso.");
+
+                break;
+            }
+        default:
+            throw new Exception("Operacao invalida");
     }
 }
 else if (modelName == "Lab")
