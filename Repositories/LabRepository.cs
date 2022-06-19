@@ -31,17 +31,6 @@ public class LabRepository
 
         connection.Execute("INSERT INTO Lab VALUES(@ID, @Name, @Block, @Number);", lab);
 
-        // var command = connection.CreateCommand();
-
-        // command.CommandText = "INSERT INTO Lab VALUES($id, $name, $block, $number);";
-
-        // command.Parameters.AddWithValue("$id", lab.ID);
-        // command.Parameters.AddWithValue("$name", lab.Name);
-        // command.Parameters.AddWithValue("$block", lab.Block);
-        // command.Parameters.AddWithValue("$number", lab.Number);
-
-        // command.ExecuteNonQuery();
-
         connection.Close();
     }
 
@@ -50,22 +39,19 @@ public class LabRepository
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
-        var command = connection.CreateCommand();
-        command.CommandText = "SELECT * FROM Lab WHERE ID=$id;";
-        command.Parameters.AddWithValue("$id", id);
+        var lab = connection.QuerySingle<Lab>("SELECT * FROM Lab WHERE ID=@ID", new { @ID = id });
 
-        var reader = command.ExecuteReader();
+        // var command = connection.CreateCommand();
+        // command.CommandText = "SELECT * FROM Lab WHERE ID=$id;";
+        // command.Parameters.AddWithValue("$id", id);
 
-        //if (reader.Read())
-        //{
-        var lab = ReaderToLab(reader);
+        // var reader = command.ExecuteReader();
+
+        // var lab = ReaderToLab(reader);
 
         connection.Close();
 
         return lab;
-        //}
-
-        //throw new ApplicationException("Não há laboratorio com esse ID!");
     }
 
     public Lab Update(Lab lab)
@@ -118,18 +104,9 @@ public class LabRepository
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
-        var command = connection.CreateCommand();
+        var exists = connection.ExecuteScalar<bool>("SELECT COUNT(ID) FROM Lab WHERE ID=@ID", new { @ID = id });
 
-        command.CommandText = "SELECT COUNT(ID) FROM Lab WHERE ID=$ID";
-        command.Parameters.AddWithValue("$ID", id);
-
-        // var reader = command.ExecuteReader();
-        
-        // var resultado = reader.GetBoolean(0);
-
-        var resultado = Convert.ToBoolean(command.ExecuteScalar());
-        
         connection.Close();
-        return resultado;
+        return exists;
     }
 }
