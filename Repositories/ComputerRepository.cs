@@ -29,7 +29,7 @@ public class ComputerRepository
         connection.Open();
 
         connection.Execute("INSERT INTO Computer VALUES(@ID, @Ram, @Processor);", computer);
-        
+
         connection.Close();
     }
 
@@ -38,23 +38,13 @@ public class ComputerRepository
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
-        var command = connection.CreateCommand();
-        command.CommandText = $"SELECT * FROM Computer WHERE ID=$id;";
-        command.Parameters.AddWithValue("$id", id);
-
-        var reader = command.ExecuteReader();
-
-        //if (reader.Read())
-        //{
-        var computer = readerToComputer(reader);
+        var computer = connection.QuerySingle<Computer>("SELECT * FROM Computer WHERE ID=@ID", new { @ID = id });
 
         connection.Close();
 
         return computer;
-        //}
-
-        //throw new ApplicationException("Não há computador com esse ID!");
     }
+
     public Computer Update(Computer computer)
     {
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
@@ -105,14 +95,9 @@ public class ComputerRepository
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
-        var command = connection.CreateCommand();
-
-        command.CommandText = "SELECT COUNT(ID) FROM Computer WHERE ID=$ID";
-        command.Parameters.AddWithValue("$ID", id);
-
-        var reader = command.ExecuteReader();
+        var exists = connection.QuerySingle<bool>("SELECT COUNT(ID) FROM Computer WHERE ID=@ID", new { @ID = id });
 
         connection.Close();
-        return reader.GetBoolean(0);
+        return exists;
     }
 }
