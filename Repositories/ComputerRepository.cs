@@ -12,6 +12,7 @@ public class ComputerRepository
     {
         _databaseConfig = databaseConfig;
     }
+    
     public IEnumerable<Computer> GetAll()
     {
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
@@ -63,15 +64,6 @@ public class ComputerRepository
         connection.Execute("DELETE FROM Computer WHERE ID=@ID", new { @ID = id });
 
         connection.Close();
-    }
-
-    private Computer readerToComputer(SqliteDataReader reader)
-    {
-        return new Computer(
-            id: reader.GetInt32(0),
-            ram: reader.GetString(1),
-            processor: reader.GetString(2)
-        ); ;
     }
 
     public bool ExistsById(int id)
