@@ -35,17 +35,15 @@ public class DatabaseSetup
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
 
         connection.Open();
-        var command = connection.CreateCommand();
 
-        command.CommandText = @"
+        connection.Execute(@"
             CREATE TABLE IF NOT EXISTS Lab(
-                ID int not null primary key,
-                Name varchar(100) not null,
-                Block varchar(100) not null,
-                Number int not null
-        );";
-
-        command.ExecuteNonQuery();
+                 ID int not null primary key,
+                 Name varchar(100) not null,
+                 Block varchar(100) not null,
+                 Number int not null
+            );
+        ");
 
         connection.Close();
     }
