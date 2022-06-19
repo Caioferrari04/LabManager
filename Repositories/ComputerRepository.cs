@@ -45,24 +45,14 @@ public class ComputerRepository
         return computer;
     }
 
-    public Computer Update(Computer computer)
+    public void Update(Computer computer)
     {
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
-
-        var command = connection.CreateCommand();
-
-        command.CommandText = $"UPDATE Computer SET Ram=$Ram, Processor=$Processor WHERE ID=$ID;";
-        command.Parameters.AddWithValue("$ID", computer.ID);
-        command.Parameters.AddWithValue("$Ram", computer.Ram);
-        command.Parameters.AddWithValue("$Processor", computer.Processor);
-
-        command.ExecuteNonQuery();
+        connection.Execute("UPDATE Computer SET Ram=@Ram, Processor=@Processor WHERE ID=@ID", computer);
 
         connection.Close();
-
-        return computer;
     }
 
     public void Delete(int id)

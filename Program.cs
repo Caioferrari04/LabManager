@@ -62,9 +62,9 @@ try
                                 var processor = args[4];
 
                                 var computer = new Computer(id: id, ram: ram, processor: processor);
-                                computer = computerRepository.Update(computer);
+                                computerRepository.Update(computer);
 
-                                Console.WriteLine($"{computer.ID}, {computer.Ram}, {computer.Processor}");
+                                Console.WriteLine($"Computador de ID {id} atualizado com sucesso.");
                                 break;
                             }
                             Console.WriteLine("Não existe computador com esse ID");
