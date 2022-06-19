@@ -7,11 +7,11 @@ var databaseSetup = new DatabaseSetup(databaseConfig);
 var computerRepository = new ComputerRepository(databaseConfig);
 var labRepository = new LabRepository(databaseConfig);
 
-var modelName = args[0];
-var modelAction = args[1];
-
 try
 {
+    var modelName = args[0];
+    var modelAction = args[1];
+
     switch (modelName)
     {
         case "Computer":
@@ -136,9 +136,9 @@ try
                                 var number = Convert.ToInt32(args[5]);
 
                                 var lab = new Lab(id: id, name: name, block: block, number: number);
-                                lab = labRepository.Update(lab);
+                                labRepository.Update(lab);
 
-                                Console.WriteLine($"{lab.ID}, {lab.Name}, {lab.Block}, {lab.Number}");
+                                Console.WriteLine($"Laboratório de ID {id} atualizado com sucesso.");
                                 break;
                             }
                             Console.WriteLine("Não existe laboratorio com esse ID");

@@ -41,37 +41,29 @@ public class LabRepository
 
         var lab = connection.QuerySingle<Lab>("SELECT * FROM Lab WHERE ID=@ID", new { @ID = id });
 
-        // var command = connection.CreateCommand();
-        // command.CommandText = "SELECT * FROM Lab WHERE ID=$id;";
-        // command.Parameters.AddWithValue("$id", id);
-
-        // var reader = command.ExecuteReader();
-
-        // var lab = ReaderToLab(reader);
-
         connection.Close();
 
         return lab;
     }
 
-    public Lab Update(Lab lab)
+    public void Update(Lab lab)
     {
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
-        var command = connection.CreateCommand();
+        connection.Execute("UPDATE Lab SET Name=@Name, Block=@Block, Number=@Number WHERE ID=@ID", lab);
 
-        command.CommandText = "UPDATE Lab SET Name=$Name, Block=$Block, Number=$Number WHERE ID=$ID;";
-        command.Parameters.AddWithValue("$ID", lab.ID);
-        command.Parameters.AddWithValue("$Name", lab.Name);
-        command.Parameters.AddWithValue("$Block", lab.Block);
-        command.Parameters.AddWithValue("$Number", lab.Number);
+        // var command = connection.CreateCommand();
 
-        command.ExecuteNonQuery();
+        // command.CommandText = "UPDATE Lab SET Name=$Name, Block=$Block, Number=$Number WHERE ID=$ID;";
+        // command.Parameters.AddWithValue("$ID", lab.ID);
+        // command.Parameters.AddWithValue("$Name", lab.Name);
+        // command.Parameters.AddWithValue("$Block", lab.Block);
+        // command.Parameters.AddWithValue("$Number", lab.Number);
+
+        // command.ExecuteNonQuery();
 
         connection.Close();
-
-        return lab;
     }
 
     public void Delete(int id)
