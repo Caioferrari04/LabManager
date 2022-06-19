@@ -22,8 +22,8 @@ public class DatabaseSetup
         command.CommandText = @"
             CREATE TABLE IF NOT EXISTS Computer(
                 ID int not null primary key,
-                ram varchar(100) not null,
-                processor varchar(100) not null
+                Ram varchar(100) not null,
+                Processor varchar(100) not null
         );";
 
         command.ExecuteNonQuery();

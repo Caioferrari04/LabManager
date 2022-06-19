@@ -19,6 +19,7 @@ public class ComputerRepository
 
         var computers =  connection.Query<Computer>("SELECT * FROM Computer");
 
+        connection.Close();
         return computers;
     }
 
@@ -26,16 +27,9 @@ public class ComputerRepository
     {
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
-        var command = connection.CreateCommand();
 
-        command.CommandText = $"INSERT INTO Computer VALUES($id, $ram, $processor)";
-
-        command.Parameters.AddWithValue("$id", computer.ID);
-        command.Parameters.AddWithValue("$ram", computer.Ram);
-        command.Parameters.AddWithValue("$processor", computer.Processor);
-
-        command.ExecuteNonQuery();
-
+        connection.Execute("INSERT INTO Computer VALUES(@ID, @Ram, @Processor);", computer);
+        
         connection.Close();
     }
 
