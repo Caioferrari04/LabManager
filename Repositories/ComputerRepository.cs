@@ -71,7 +71,7 @@ public class ComputerRepository
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
-        var exists = connection.QuerySingle<bool>("SELECT COUNT(ID) FROM Computer WHERE ID=@ID", new { @ID = id });
+        var exists = connection.ExecuteScalar<bool>("SELECT COUNT(ID) FROM Computer WHERE ID=@ID", new { @ID = id });
 
         connection.Close();
         return exists;
