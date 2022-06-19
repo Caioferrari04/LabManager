@@ -66,16 +66,6 @@ public class LabRepository
         connection.Close();
     }
 
-    private Lab ReaderToLab(SqliteDataReader reader)
-    {
-        return new Lab(
-            id: reader.GetInt32(0),
-            name: reader.GetString(1),
-            block: reader.GetString(2),
-            number: reader.GetInt32(3)
-        );
-    }
-
     public bool ExistsById(int id)
     {
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);

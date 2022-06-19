@@ -1,4 +1,5 @@
 using Microsoft.Data.Sqlite;
+using Dapper;
 
 namespace LabManager.Database;
 
@@ -17,16 +18,14 @@ public class DatabaseSetup
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
 
         connection.Open();
-        var command = connection.CreateCommand();
 
-        command.CommandText = @"
+        connection.Execute(@"
             CREATE TABLE IF NOT EXISTS Computer(
-                ID int not null primary key,
-                Ram varchar(100) not null,
-                Processor varchar(100) not null
-        );";
-
-        command.ExecuteNonQuery();
+                 ID int not null primary key,
+                 Ram varchar(100) not null,
+                 Processor varchar(100) not null
+            );
+        ");
 
         connection.Close();
     }
