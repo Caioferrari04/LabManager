@@ -2,6 +2,9 @@ namespace LabManager.Models;
 
 public class Lab
 {
+    public Lab()
+    { }
+    
     public Lab(int id, string name, string block, int number)
     {
         ID = id;
