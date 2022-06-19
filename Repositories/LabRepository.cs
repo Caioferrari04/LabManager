@@ -18,16 +18,6 @@ public class LabRepository
         connection.Open();
 
         var labs = connection.Query<Lab>("SELECT * FROM Lab");
-        
-        // var command = connection.CreateCommand();
-        // command.CommandText = "SELECT * FROM Lab;";
-
-        // var reader = command.ExecuteReader();
-        // while (reader.Read())
-        // {
-        //     var lab = ReaderToLab(reader);
-        //     labs.Add(lab);
-        // }
 
         connection.Close();
 
@@ -38,16 +28,19 @@ public class LabRepository
     {
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
-        var command = connection.CreateCommand();
 
-        command.CommandText = "INSERT INTO Lab VALUES($id, $name, $block, $number);";
+        connection.Execute("INSERT INTO Lab VALUES(@ID, @Name, @Block, @Number);", lab);
 
-        command.Parameters.AddWithValue("$id", lab.ID);
-        command.Parameters.AddWithValue("$name", lab.Name);
-        command.Parameters.AddWithValue("$block", lab.Block);
-        command.Parameters.AddWithValue("$number", lab.Number);
+        // var command = connection.CreateCommand();
 
-        command.ExecuteNonQuery();
+        // command.CommandText = "INSERT INTO Lab VALUES($id, $name, $block, $number);";
+
+        // command.Parameters.AddWithValue("$id", lab.ID);
+        // command.Parameters.AddWithValue("$name", lab.Name);
+        // command.Parameters.AddWithValue("$block", lab.Block);
+        // command.Parameters.AddWithValue("$number", lab.Number);
+
+        // command.ExecuteNonQuery();
 
         connection.Close();
     }
