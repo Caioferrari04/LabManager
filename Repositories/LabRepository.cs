@@ -1,6 +1,7 @@
 using LabManager.Database;
 using LabManager.Models;
 using Microsoft.Data.Sqlite;
+using Dapper;
 
 namespace LabManager.Repositories;
 
@@ -11,22 +12,22 @@ public class LabRepository
     {
         _databaseConfig = databaseConfig;
     }
-    public List<Lab> GetAll()
+    public IEnumerable<Lab> GetAll()
     {
-        var labs = new List<Lab>();
-
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
-        var command = connection.CreateCommand();
-        command.CommandText = "SELECT * FROM Lab;";
+        var labs = connection.Query<Lab>("SELECT * FROM Lab");
+        
+        // var command = connection.CreateCommand();
+        // command.CommandText = "SELECT * FROM Lab;";
 
-        var reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            var lab = ReaderToLab(reader);
-            labs.Add(lab);
-        }
+        // var reader = command.ExecuteReader();
+        // while (reader.Read())
+        // {
+        //     var lab = ReaderToLab(reader);
+        //     labs.Add(lab);
+        // }
 
         connection.Close();
 
