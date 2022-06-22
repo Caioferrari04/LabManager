@@ -15,19 +15,19 @@ public class ComputerRepository
 
     public IEnumerable<Computer> GetAll()
     {
-        using (var connection = new SqliteConnection(_databaseConfig.ConnectionString))
-        {
-            var computers = connection.Query<Computer>("SELECT * FROM Computer");
-            return computers;
-        }
+        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
+        connection.Open();
+
+        var computers = connection.Query<Computer>("SELECT * FROM Computer");
+        return computers;
     }
 
     public void Save(Computer computer)
     {
-        using (var connection = new SqliteConnection(_databaseConfig.ConnectionString))
-        {
-            connection.Execute("INSERT INTO Computer VALUES(@ID, @Ram, @Processor);", computer);
-        }
+        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
+        connection.Open();
+        
+        connection.Execute("INSERT INTO Computer VALUES(@ID, @Ram, @Processor);", computer);
     }
 
     public Computer GetById(int id)
