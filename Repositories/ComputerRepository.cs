@@ -12,68 +12,55 @@ public class ComputerRepository
     {
         _databaseConfig = databaseConfig;
     }
-    
+
     public IEnumerable<Computer> GetAll()
     {
-        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-
-        var computers =  connection.Query<Computer>("SELECT * FROM Computer");
-
-        connection.Close();
-        return computers;
+        using (var connection = new SqliteConnection(_databaseConfig.ConnectionString))
+        {
+            var computers = connection.Query<Computer>("SELECT * FROM Computer");
+            return computers;
+        }
     }
 
     public void Save(Computer computer)
     {
-        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-
-        connection.Execute("INSERT INTO Computer VALUES(@ID, @Ram, @Processor);", computer);
-
-        connection.Close();
+        using (var connection = new SqliteConnection(_databaseConfig.ConnectionString))
+        {
+            connection.Execute("INSERT INTO Computer VALUES(@ID, @Ram, @Processor);", computer);
+        }
     }
 
     public Computer GetById(int id)
     {
-        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-
-        var computer = connection.QuerySingle<Computer>("SELECT * FROM Computer WHERE ID=@ID", new { @ID = id });
-
-        connection.Close();
-
-        return computer;
+        using (var connection = new SqliteConnection(_databaseConfig.ConnectionString))
+        {
+            var computer = connection.QuerySingle<Computer>("SELECT * FROM Computer WHERE ID=@ID", new { @ID = id });
+            return computer;
+        }
     }
 
     public void Update(Computer computer)
     {
-        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-
-        connection.Execute("UPDATE Computer SET Ram=@Ram, Processor=@Processor WHERE ID=@ID", computer);
-
-        connection.Close();
+        using (var connection = new SqliteConnection(_databaseConfig.ConnectionString))
+        {
+            connection.Execute("UPDATE Computer SET Ram=@Ram, Processor=@Processor WHERE ID=@ID", computer);
+        }
     }
 
     public void Delete(int id)
     {
-        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-
-        connection.Execute("DELETE FROM Computer WHERE ID=@ID", new { @ID = id });
-
-        connection.Close();
+        using (var connection = new SqliteConnection(_databaseConfig.ConnectionString))
+        {
+            connection.Execute("DELETE FROM Computer WHERE ID=@ID", new { @ID = id });
+        }
     }
 
     public bool ExistsById(int id)
     {
-        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-
-        var exists = connection.ExecuteScalar<bool>("SELECT COUNT(ID) FROM Computer WHERE ID=@ID", new { @ID = id });
-
-        connection.Close();
-        return exists;
+        using (var connection = new SqliteConnection(_databaseConfig.ConnectionString))
+        {
+            var exists = connection.ExecuteScalar<bool>("SELECT COUNT(ID) FROM Computer WHERE ID=@ID", new { @ID = id });
+            return exists;
+        }
     }
 }
